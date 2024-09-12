@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.management.SysFunctionDao">
+
+    <select id="getByRoleId" resultType="org.example.common.domain.management.SysFunction">
+        SELECT
+            b.*
+        FROM
+            sys_role_function_rela a,
+            sys_function b
+        WHERE
+            a.fun_id = b.fun_id
+          AND a.role_id =#{roleId}
+          AND b.app_id=#{appId}
+        ORDER BY b.fun_code
+    </select>
+
+    <select id="listFunctionsByAccountId" resultType="org.example.common.domain.management.SysFunction">
+        SELECT
+            b.*
+        FROM
+            sys_account_private_function a,
+            sys_function b
+        WHERE
+            a.fun_id = b.fun_id
+          AND a.account_id = #{accountId}
+        ORDER BY
+            b.fun_code
+    </select>
+
+    <select id="listByAccountId" resultType="org.example.common.domain.management.SysFunction">
+        SELECT
+        distinct menu.*
+        FROM
+        (
+        SELECT
+        c.*
+        FROM
+        sys_account_role_rela a,
+        sys_role_function_rela b,
+        sys_function c
+        WHERE
+        a.role_id = b.role_id
+        AND b.fun_id = c.fun_id
+        AND a.account_id = #{accountId}
+        <if test="parentId != null and parentId != ''">
+            AND c.parent_id = #{parentId}
+        </if>
+        <if test="inherent != null and inherent != ''">
+            AND c.inherent = #{inherent}
+        </if>
+        <if test="funType != null and funType != ''">
+            AND c.fun_type = #{funType}
+        </if>
+        AND c.app_id=#{appId}
+        UNION ALL
+        SELECT
+        c.*
+        FROM
+        sys_group_members a,
+        sys_group_function_rela b,
+        sys_function c
+        WHERE
+        a.group_id = b.group_id
+        AND b.fun_id = c.fun_id
+        AND a.account_id = #{accountId}
+        <if test="parentId != null and parentId != ''">
+            AND c.parent_id = #{parentId}
+        </if>
+        <if test="inherent != null and inherent != ''">
+            AND c.inherent = #{inherent}
+        </if>
+        <if test="funType != null and funType != ''">
+            AND c.fun_type = #{funType}
+        </if>
+        AND c.app_id=#{appId}
+        UNION ALL
+        SELECT
+        b.*
+        FROM
+        sys_account_private_function a,
+        sys_function b
+        WHERE
+        a.fun_id = b.fun_id
+        AND a.account_id = #{accountId}
+        <if test="parentId != null and parentId != ''">
+            AND b.parent_id = #{parentId}
+        </if>
+        <if test="inherent != null and inherent != ''">
+            AND b.inherent = #{inherent}
+        </if>
+        <if test="funType != null and funType != ''">
+            AND b.fun_type = #{funType}
+        </if>
+        AND b.app_id=#{appId}
+        ) menu
+        WHERE menu.status='1'
+        ORDER BY
+        menu.order_code
+    </select>
+
+    <!-- 分页查询-自定义sql-Wrapper -->
+    <select id="selpageCustomSqlByWrapper" resultType="org.example.common.domain.management.SysFunction">
+        select * from sys_function t ${ew.customSqlSegment}
+    </select>
+
+    <!-- 分页查询-自定义sql-Map -->
+    <select id="selpageCustomSqlByMap" resultType="org.example.common.domain.management.SysFunction">
+        select * from sys_function t where id=#{params.id} and name=#{params.name}
+    </select>
+</mapper>

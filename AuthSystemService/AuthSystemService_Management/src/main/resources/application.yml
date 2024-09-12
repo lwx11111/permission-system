@@ -1,0 +1,111 @@
+server:
+  port: 8000
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+
+spring:
+  # 循环依赖
+  main:
+    allow-circular-references: true
+  application:
+    name: manager
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        locator:
+          lower-case-service-id: true
+        register-enabled: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_system_v2?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    driverClassName: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: lwxMysql
+    maxActive: 1000
+    initialSize: 100
+    maxWait: 60000
+    minIdle: 500
+
+mybatis:
+  type-aliases-package: org.example.domain   #  定义所有操作类的别名所在包
+  mapper-locations: classpath:mappers/*.xml,classpath:mappers/*/*.xml,classpath:mappers/*/*/*.xml #  所有的mapper映射文件
+
+# mybatis-plus相关配置
+mybatis-plus:
+  # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
+  mapper-locations: classpath:mappers/*.xml,classpath:mappers/*/*.xml,classpath:mappers/*/*/*.xml
+  # 以下配置均有默认值,可以不设置
+  global-config:
+    db-config:
+      #主键类型 AUTO:"数据库ID自增" INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: auto
+      #字段策略 IGNORED:"忽略判断"  NOT_NULL:"非 NULL 判断")  NOT_EMPTY:"非空判断"
+      field-strategy: NOT_EMPTY
+      #数据库类型
+      db-type: MYSQL
+  configuration:
+    # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
+    map-underscore-to-camel-case: true
+    # 如果查询结果中包含空值的列，则 MyBatis 在映射的时候，不会映射这个字段
+    call-setters-on-nulls: true
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+ribbon:
+  eager-load:
+    enabled: true
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+  # 生产者
+  producer:
+    group: myProducer
+    # 消息发送超时时间
+    send-message-timeout: 3000
+    # 消息最大长度4M
+    max-message-size: 4096
+    # 消息发送失败重试次数
+    retry-times-when-send-failed: 3
+    # 异步消息发送失败重试次数
+    retry-times-when-send-async-failed: 2
+  # 消费者
+  consumer:
+    group: myConsumer
+    # 每次提取的最大消息数
+
+
+### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
+xxl:
+  job:
+    admin:
+      addresses: http://127.0.0.1:8080/xxl-job-admin
+
+    ### xxl-job, access token
+    accessToken: default_token
+
+    ### xxl-job executor appname
+    executor:
+      appname: xxl-job-executor-sample
+      ### xxl-job executor registry-address: default use address to registry , otherwise use ip:port if address is null
+      address:
+      ### xxl-job executor server-info
+      ip:
+      port: 9999
+      ### xxl-job executor log-path
+      logpath: /data/applogs/xxl-job/jobhandler
+      ### xxl-job executor log-retention-days
+      logretentiondays: 30
+
+
+minio:
+  endpoint: http://127.0.0.1
+  port: 9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucket: test
+
+

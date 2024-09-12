@@ -1,0 +1,11 @@
+{
+  "APP_NAME": "系统",
+  "APP_ID": "1",
+  "GATEWAY_URL": "http://localhost:8922",
+  "AUTH_NAME": "manager",
+  "USER_TOKEN_NAME": "Delivery-UserId",
+  "ADDRESS_TOKEN_NAME": "Delivery-Address",
+  "AUTH_TOKEN_NAME": "Delivery-Auth-Token",
+  "BACKGROUND_COLOR": "#7B68EE"
+}
+

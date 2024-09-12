@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.management.group.SysGroupDao">
+
+    <select id="listGroupByAccountId" resultType="org.example.common.domain.management.group.SysGroup">
+        SELECT
+            a.*
+        FROM
+            sys_group a,
+            sys_group_members b
+        WHERE
+            a.group_id = b.group_id
+          AND b.account_id = #{accountId}
+    </select>
+
+    <select id="listMembers" resultType="org.example.dto.ListMembersResult">
+        SELECT a.account_id, a.account_name, a.user_id, a.user_name
+        FROM sys_account a left join sys_group_members m on a.account_id = m.account_id
+        where m.group_id = #{groupId} and a.app_id = #{appId}
+    </select>
+
+    <!-- 分页查询-自定义sql-Wrapper -->
+    <select id="selpageCustomSqlByWrapper" resultType="org.example.common.domain.management.group.SysGroup">
+        select * from sys_group t ${ew.customSqlSegment}
+    </select>
+
+    <!-- 分页查询-自定义sql-Map -->
+    <select id="selpageCustomSqlByMap" resultType="org.example.common.domain.management.group.SysGroup">
+        select * from sys_group t where id=#{params.id} and name=#{params.name}
+    </select>
+</mapper>
